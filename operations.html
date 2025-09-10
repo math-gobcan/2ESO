@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Operaciones Combinadas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(135deg, #63cdda 0%, #f7f1e3 100%);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .top-bar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: calc(100% - 20px);
+    }
+    .player-name {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #2d3436;
+      text-shadow: 1px 2px 5px #fff8;
+      max-width: 60vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .score {
+      font-size: 1.1em;
+      color: #218c5a;
+      font-weight: 600;
+      background: #fff8;
+      border-radius: 8px;
+      padding: 6px 12px;
+      box-shadow: 0 2px 8px #8882;
+      margin-left: 12px;
+    }
+    .timer {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #f79f1f;
+      background: #fff8;
+      border-radius: 8px;
+      padding: 6px 14px;
+      box-shadow: 0 2px 8px #8882;
+      letter-spacing: 2px;
+    }
+    .main {
+      flex: 1 1 auto;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 80px;
+      padding-bottom: 30px;
+    }
+    .question-panel {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 2px 16px #60a3bc22;
+      padding: 28px 7vw;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      min-width: 0;
+      width: 92vw;
+      max-width: 500px;
+    }
+    .operation {
+      font-size: 2em;
+      color: #3c6382;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-align: center;
+      word-break: break-word;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    input[type="number"] {
+      font-size: 1.3em;
+      border-radius: 14px;
+      border: 2px solid #38ada9;
+      padding: 14px 22px;
+      text-align: center;
+      width: 120px;
+      margin-bottom: 8px;
+      background: #f7f1e3;
+      box-shadow: 0 2px 10px #60a3bc22;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    input[type="number"]:focus {
+      border: 2.5px solid #f6b93b;
+      background: #fff;
+      box-shadow: 0 4px 16px #38ada933;
+    }
+    button {
+      font-size: 1.1em;
+      background: linear-gradient(90deg, #38ada9, #f6b93b);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 34px;
+      box-shadow: 0 2px 8px #8882;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+      max-width: 180px;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      transition: background 0.2s, box-shadow 0.2s;
+      letter-spacing: 1px;
+    }
+    button:active {
+      background: linear-gradient(90deg, #079992, #e58e26);
+      box-shadow: 0 3px 16px #38ada944;
+    }
+    .feedback {
+      font-size: 1.1em;
+      margin-top: 6px;
+      font-weight: 600;
+      min-height: 20px;
+      color: #b71540;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .final-message {
+      font-size: 1.6em;
+      color: #2c2c54;
+      font-weight: 800;
+      margin-top: 24px;
+      background: #f6b93b22;
+      border-radius: 18px;
+      padding: 22px 12vw;
+      box-shadow: 0 4px 24px #f6b93b44;
+      text-align: center;
+      animation: pop 0.7s ease;
+    }
+    #nameInput {
+      font-size: 1.3em;
+      border-radius: 14px;
+      border: 2px solid #38ada9;
+      padding: 14px 22px;
+      text-align: center;
+      width: 80vw;
+      max-width: 320px;
+      margin-bottom: 8px;
+      background: #f7f1e3;
+      box-shadow: 0 2px 10px #60a3bc22;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    #nameInput:focus {
+      border: 2.5px solid #f6b93b;
+      background: #fff;
+      box-shadow: 0 4px 16px #38ada933;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      80% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @media (max-width: 600px) {
+      .question-panel {
+        padding: 16px 4vw;
+        max-width: 98vw;
+      }
+      .final-message {
+        padding: 18px 2vw;
+        font-size: 1.3em;
+      }
+      input[type="number"] {
+        width: 80vw;
+        max-width: 98vw;
+        font-size: 1.15em;
+        padding: 10px 8px;
+      }
+      #nameInput {
+        width: 90vw;
+        max-width: 98vw;
+        font-size: 1.15em;
+        padding: 10px 8px;
+      }
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div style="display:flex; align-items:center;">
+      <div class="player-name" id="playerName"></div>
+      <div class="score" id="scorePanel"></div>
+    </div>
+    <div class="timer" id="timerPanel"></div>
+  </div>
+  <div class="main" id="mainPanel">
+    <div class="question-panel" id="startPanel">
+      <div style="font-size: 1.6em; font-weight: 700; color: #3c6382; margin-bottom:10px;">¡Bienvenido!</div>
+      <div style="font-size: 1.1em; margin-bottom:10px;">Introduce tu nombre para empezar:</div>
+      <input type="text" id="nameInput" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off"/>
+      <button onclick="startGame()">Comenzar</button>
+    </div>
+  </div>
+  <script>
+    let playerName = '';
+    let score = 0;
+    let timer = 600;
+    let timerInterval = null;
+    let gameActive = false;
+    let opCount = 0; // operaciones presentadas
+
+    const playerNameDiv = document.getElementById('playerName');
+    const scorePanelDiv = document.getElementById('scorePanel');
+    const timerPanelDiv = document.getElementById('timerPanel');
+    const mainPanelDiv = document.getElementById('mainPanel');
+    const startPanelDiv = document.getElementById('startPanel');
+    const nameInput = document.getElementById('nameInput');
+
+    function formatTime(sec) {
+      let m = Math.floor(sec / 60);
+      let s = sec % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function startGame() {
+      const name = nameInput.value.trim() || "Jugador";
+      playerName = name;
+      score = 0;
+      timer = 600;
+      opCount = 0;
+      gameActive = true;
+      playerNameDiv.textContent = playerName;
+      scorePanelDiv.textContent = `Puntos: ${score}`;
+      timerPanelDiv.textContent = formatTime(timer);
+      startPanelDiv.style.display = 'none';
+      showNewOperation();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function randInt(min, max, avoidZero=false) {
+      let n;
+      do {
+        n = Math.floor(Math.random() * (max - min + 1)) + min;
+      } while (avoidZero && n === 0);
+      return n;
+    }
+
+    // Todos los números con paréntesis y nunca dos símbolos juntos
+    function formatNum(n) {
+      return `(${n >= 0 ? "+" + n : n})`;
+    }
+
+    function generateCombined(opCount) {
+      // Dificultad gradual: número de cifras = 2 + Math.floor(opCount/10), máximo 6
+      // Solo 1 o 2 multiplicaciones máximo
+      let nCount = Math.min(2 + Math.floor(opCount / 10), 6);
+      let operators = [];
+      let possibleOps = ['+', '-', '·'];
+      let nums = [];
+      let opMulCount = 0;
+
+      for (let i = 0; i < nCount; i++) {
+        nums.push(randInt(-10, 10));
+      }
+      for (let i = 0; i < nCount - 1; i++) {
+        // Decide si poner '·'
+        let op;
+        if (opMulCount < 2 && Math.random() < 0.25) {
+          op = '·';
+          opMulCount++;
+        } else {
+          op = possibleOps[Math.floor(Math.random() * 2)]; // '+' o '-'
+        }
+        operators.push(op);
+      }
+
+      // Construir expresión con jerarquía
+      let expr = '';
+      if (nCount === 2) {
+        expr = `${formatNum(nums[0])} ${operators[0]} ${formatNum(nums[1])}`;
+      } else if (nCount === 3) {
+        expr = `(${formatNum(nums[0])} ${operators[0]} ${formatNum(nums[1])}) ${operators[1]} ${formatNum(nums[2])}`;
+      } else if (nCount === 4) {
+        expr = `(${formatNum(nums[0])} ${operators[0]} ${formatNum(nums[1])}) ${operators[1]} (${formatNum(nums[2])} ${operators[2]} ${formatNum(nums[3])})`;
+      } else if (nCount === 5) {
+        expr = `[(${formatNum(nums[0])} ${operators[0]} ${formatNum(nums[1])}) ${operators[1]} (${formatNum(nums[2])} ${operators[2]} ${formatNum(nums[3])})] ${operators[3]} ${formatNum(nums[4])}`;
+      } else if (nCount === 6) {
+        expr = `[(${formatNum(nums[0])} ${operators[0]} ${formatNum(nums[1])}) ${operators[1]} [${formatNum(nums[2])} ${operators[2]} (${formatNum(nums[3])} ${operators[3]} ${formatNum(nums[4])})]] ${operators[4]} ${formatNum(nums[5])}`;
+      }
+      expr = expr.replace(/·/g, '·');
+      return {expr, nums, operators};
+    }
+
+    function evalCombined(exprStr) {
+      let expr = exprStr.replace(/·/g, '*');
+      expr = expr.replace(/\+/g, '');
+      expr = expr.replace(/\(/g, '(').replace(/\)/g, ')');
+      try {
+        let r = Math.round(eval(expr));
+        return r;
+      } catch {
+        return NaN;
+      }
+    }
+
+    function showNewOperation() {
+      if (!gameActive) return;
+      mainPanelDiv.innerHTML = '';
+      opCount++;
+      let opData = generateCombined(opCount-1);
+      let expr = opData.expr;
+      let result = evalCombined(expr);
+
+      while (isNaN(result)) {
+        opData = generateCombined(opCount-1);
+        expr = opData.expr;
+        result = evalCombined(expr);
+      }
+
+      const questionPanel = document.createElement('div');
+      questionPanel.className = 'question-panel';
+      questionPanel.innerHTML = `
+        <div class="operation">${expr} = ?</div>
+        <input type="number" id="answerInput" autocomplete="off" inputmode="numeric" />
+        <button id="submitBtn">Responder</button>
+        <div class="feedback" id="feedbackMsg"></div>
+      `;
+      mainPanelDiv.appendChild(questionPanel);
+
+      document.getElementById('submitBtn').onclick = () => {
+        const answer = document.getElementById('answerInput').value.trim();
+        const feedbackMsg = document.getElementById('feedbackMsg');
+        if (answer === '') {
+          feedbackMsg.textContent = 'Introduce una respuesta.';
+          feedbackMsg.style.color = '#b71540';
+          return;
+        }
+        let correct = Number(answer) === result;
+        if (correct) {
+          score += 10;
+          feedbackMsg.textContent = '¡Correcto!';
+          feedbackMsg.style.color = '#218c5a';
+        } else {
+          score -= 10;
+          feedbackMsg.textContent = `Incorrecto. La respuesta era ${result}`;
+          feedbackMsg.style.color = '#b71540';
+        }
+        scorePanelDiv.textContent = `Puntos: ${score}`;
+        setTimeout(() => {
+          if (gameActive) showNewOperation();
+        }, 1100);
+      };
+      document.getElementById('answerInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('submitBtn').click();
+      });
+      document.getElementById('answerInput').focus();
+    }
+
+    function updateTimer() {
+      timer--;
+      timerPanelDiv.textContent = formatTime(timer);
+      if (timer <= 0) {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      gameActive = false;
+      timerPanelDiv.textContent = '00:00';
+      mainPanelDiv.innerHTML = `
+        <div class="final-message">
+          ¡Tiempo terminado!<br>
+          <span>${playerName}</span>, tu marcador final es:<br>
+          <span style="color:#079992;font-size:2em">${score}</span> puntos
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
