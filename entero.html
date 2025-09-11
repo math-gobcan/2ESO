@@ -74,74 +74,132 @@
     }
     .question-panel {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px #60a3bc22;
-      padding: 24px 10vw;
+      border-radius: 22px;
+      box-shadow: 0 4px 24px #60a3bc33;
+      padding: 32px 7vw;
       margin-top: 18px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 28px;
       min-width: 0;
-      width: 90vw;
-      max-width: 380px;
+      width: 94vw;
+      max-width: 410px;
+      animation: fadeIn 0.7s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
     }
     .operation {
-      font-size: 2.2em;
-      color: #3c6382;
-      font-weight: 800;
+      font-size: 2.3em;
+      color: #222f3e;
+      font-weight: 900;
       letter-spacing: 2px;
-      margin-bottom: 6px;
+      margin-bottom: 12px;
       text-align: center;
       word-break: break-word;
+      text-shadow: 0 2px 10px #f6b93b33;
     }
-    input[type="number"], input[type="text"] {
-      font-size: 1.5em;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-      padding: 10px 14px;
+    #answerInput {
+      font-size: 2em;
+      border-radius: 12px;
+      border: 2px solid #38ada9;
+      background: #f7f1e3cc;
+      padding: 16px 0;
       text-align: center;
-      width: 90vw;
-      max-width: 180px;
-      margin-bottom: 8px;
+      width: 155px;
       box-sizing: border-box;
+      margin-bottom: 18px;
+      letter-spacing: 2px;
+      font-weight: 700;
+      color: #333;
+      box-shadow: 0 2px 15px #38ada966;
+      outline: none;
     }
-    button {
-      font-size: 1.1em;
-      background: linear-gradient(90deg, #38ada9, #f6b93b);
+    #answerPad {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .answer-pad-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 2px;
+    }
+    .num-btn {
+      width: 52px;
+      height: 52px;
+      font-size: 1.5em;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #38ada9 60%, #f6b93b 100%);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 10px 22px;
-      box-shadow: 0 2px 8px #8882;
+      box-shadow: 0 2px 8px #38ada966;
       cursor: pointer;
       font-weight: 700;
-      width: 100%;
-      max-width: 170px;
-      margin-top: 2px;
-      margin-bottom: 2px;
-      transition: background 0.2s;
+      user-select: none;
+      transition: background 0.16s, box-shadow 0.16s, transform 0.12s;
+      outline: none;
+      margin: 0 1px;
+      position: relative;
     }
-    button:active {
+    .num-btn:active, .num-btn:focus {
+      background: linear-gradient(135deg, #079992 70%, #e58e26 100%);
+      box-shadow: 0 2px 16px #f6b93b55;
+      transform: scale(0.97);
+    }
+    .num-btn:hover {
+      background: linear-gradient(135deg, #60a3bc 40%, #f6b93b 90%);
+      box-shadow: 0 4px 18px #f6b93b55;
+      z-index: 1;
+    }
+    .num-btn[data-val="del"] {
+      background: linear-gradient(135deg, #b71540 40%, #f7b731 100%);
+    }
+    .num-btn[data-val="del"]:active, .num-btn[data-val="del"]:focus {
+      background: linear-gradient(135deg, #ee5253 60%, #f7b731 100%);
+    }
+    .num-btn[data-val="-"], .num-btn[data-val="+"] {
+      background: linear-gradient(135deg, #222f3e 60%, #f6b93b 100%);
+    }
+    .num-btn[data-val="-"]:active, .num-btn[data-val="-"]:focus,
+    .num-btn[data-val="+"]:active, .num-btn[data-val="+"]:focus {
+      background: linear-gradient(135deg, #576574 60%, #f6b93b 100%);
+    }
+    button#submitBtn {
+      font-size: 1.3em;
+      font-weight: 800;
+      background: linear-gradient(90deg, #38ada9, #f6b93b);
+      border-radius: 14px;
+      box-shadow: 0 4px 18px #f6b93b44;
+      max-width: 180px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      padding: 12px 30px;
+      letter-spacing: 2px;
+    }
+    button#submitBtn:active {
       background: linear-gradient(90deg, #079992, #e58e26);
     }
     .feedback {
-      font-size: 1em;
-      margin-top: 6px;
+      font-size: 1.2em;
+      margin-top: 8px;
       font-weight: 600;
-      min-height: 20px;
+      min-height: 24px;
       color: #b71540;
       letter-spacing: 1px;
       text-align: center;
     }
     .final-message {
-      font-size: 1.5em;
+      font-size: 1.6em;
       color: #2c2c54;
-      font-weight: 800;
+      font-weight: 900;
       margin-top: 24px;
       background: #f6b93b22;
-      border-radius: 14px;
-      padding: 20px 12vw;
+      border-radius: 18px;
+      padding: 28px 12vw;
       box-shadow: 0 4px 24px #f6b93b44;
       text-align: center;
       animation: pop 0.7s ease;
@@ -153,22 +211,23 @@
     }
     @media (max-width: 600px) {
       .question-panel {
-        padding: 16px 4vw;
+        padding: 16px 2vw;
         max-width: 98vw;
       }
       .final-message {
         padding: 18px 2vw;
         font-size: 1.3em;
       }
-    }
-    /* Oculta las flechas del input en móviles */
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield;
+      .num-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2em;
+      }
+      #answerInput {
+        font-size: 1.4em;
+        padding: 10px 0;
+        width: 110px;
+      }
     }
   </style>
 </head>
@@ -182,10 +241,10 @@
   </div>
   <div class="main" id="mainPanel">
     <div class="question-panel" id="startPanel">
-      <div style="font-size: 1.5em; font-weight: 700; color: #3c6382;">¡Bienvenido!</div>
-      <div style="font-size: 1em;">Introduce tu nombre para empezar:</div>
-      <input type="text" id="nameInput" placeholder="Tu nombre..." maxlength="20" autocomplete="off"/>
-      <button onclick="startGame()">Comenzar</button>
+      <div style="font-size: 1.7em; font-weight: 900; color: #222f3e; text-shadow: 0 2px 8px #63cdda88;">¡Bienvenido!</div>
+      <div style="font-size: 1em; margin-bottom:14px;">Introduce tu nombre para empezar:</div>
+      <input type="text" id="nameInput" placeholder="Tu nombre..." maxlength="20" autocomplete="off" style="font-size:1.2em;padding:8px 12px;border-radius:7px;border:1px solid #38ada9;margin-bottom:10px;box-shadow:0 2px 10px #38ada955;">
+      <button onclick="startGame()" style="font-size:1.1em;">Comenzar</button>
     </div>
   </div>
   <script>
@@ -270,24 +329,68 @@
       mainPanelDiv.innerHTML = '';
       // Nueva operación
       const opData = randomOperation();
-      // Construye panel de pregunta
+      // Construye panel de pregunta con answerPad
       const questionPanel = document.createElement('div');
       questionPanel.className = 'question-panel';
       questionPanel.innerHTML = `
         <div class="operation">(${formatInteger(opData.a)}) ${opData.op} (${formatInteger(opData.b)}) = ?</div>
-        <input type="number" id="answerInput" autocomplete="off" inputmode="numeric" />
+        <div id="answerPad">
+          <input type="text" id="answerInput" autocomplete="off" inputmode="text" maxlength="6" readonly />
+          <div class="answer-pad-row">
+            <button type="button" class="num-btn" data-val="7">7</button>
+            <button type="button" class="num-btn" data-val="8">8</button>
+            <button type="button" class="num-btn" data-val="9">9</button>
+          </div>
+          <div class="answer-pad-row">
+            <button type="button" class="num-btn" data-val="4">4</button>
+            <button type="button" class="num-btn" data-val="5">5</button>
+            <button type="button" class="num-btn" data-val="6">6</button>
+          </div>
+          <div class="answer-pad-row">
+            <button type="button" class="num-btn" data-val="1">1</button>
+            <button type="button" class="num-btn" data-val="2">2</button>
+            <button type="button" class="num-btn" data-val="3">3</button>
+          </div>
+          <div class="answer-pad-row">
+            <button type="button" class="num-btn" data-val="+">+</button>
+            <button type="button" class="num-btn" data-val="0">0</button>
+            <button type="button" class="num-btn" data-val="-">−</button>
+            <button type="button" class="num-btn" data-val="del">←</button>
+          </div>
+        </div>
         <button id="submitBtn">Responder</button>
         <div class="feedback" id="feedbackMsg"></div>
       `;
       mainPanelDiv.appendChild(questionPanel);
 
+      // Interacción con los botones del answerPad
+      const answerInput = document.getElementById('answerInput');
+      document.querySelectorAll('.num-btn').forEach(btn => {
+        btn.onclick = () => {
+          if (btn.dataset.val === 'del') {
+            answerInput.value = answerInput.value.slice(0, -1);
+          } else if (btn.dataset.val === '+') {
+            // Solo permite un + al principio y no combina con -
+            if (answerInput.value.length < 6 && !answerInput.value.startsWith('+') && !answerInput.value.startsWith('-'))
+              answerInput.value = '+' + answerInput.value.replace(/^[\-+]/, '');
+          } else if (btn.dataset.val === '-') {
+            // Solo permite un - al principio y no combina con +
+            if (answerInput.value.length < 6 && !answerInput.value.startsWith('-') && !answerInput.value.startsWith('+'))
+              answerInput.value = '-' + answerInput.value.replace(/^[\-+]/, '');
+          } else {
+            if (answerInput.value.length < 6)
+              answerInput.value += btn.dataset.val;
+          }
+        };
+      });
+
       // Acción de responder
       document.getElementById('submitBtn').onclick = () => {
-        const answer = document.getElementById('answerInput').value.trim();
+        const answer = answerInput.value.trim();
         const feedbackMsg = document.getElementById('feedbackMsg');
         let correct = Number(answer) === opData.result;
-        if (answer === '') {
-          feedbackMsg.textContent = 'Introduce una respuesta.';
+        if (answer === '' || isNaN(Number(answer))) {
+          feedbackMsg.textContent = 'Introduce una respuesta válida.';
           feedbackMsg.style.color = '#b71540';
           return;
         }
@@ -296,9 +399,9 @@
           feedbackMsg.textContent = '¡Correcto!';
           feedbackMsg.style.color = '#218c5a';
         } else {
-          score -= 10;
           feedbackMsg.textContent = `Incorrecto. La respuesta era ${opData.result}`;
           feedbackMsg.style.color = '#b71540';
+          score -= 10;
         }
         scorePanelDiv.textContent = `Puntos: ${score}`;
         // Espera 0.9s y muestra siguiente pregunta si sigue el juego
@@ -307,9 +410,7 @@
         }, 900);
       };
 
-      // Permitir Enter para enviar
-      const answerInput = document.getElementById('answerInput');
-      answerInput.focus();
+      // Permitir Enter para enviar (si el usuario está usando teclado externo)
       answerInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') document.getElementById('submitBtn').click();
       });
