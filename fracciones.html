@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Fracciones Matemático</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(135deg, #63cdda 0%, #f7f1e3 100%);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    .top-bar {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: calc(100% - 20px);
+    }
+    .player-name {
+      font-size: 1.2em;
+      font-weight: 700;
+      color: #2d3436;
+      text-shadow: 1px 2px 5px #fff8;
+      max-width: 60vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .score {
+      font-size: 1.1em;
+      color: #218c5a;
+      font-weight: 600;
+      background: #fff8;
+      border-radius: 8px;
+      padding: 6px 12px;
+      box-shadow: 0 2px 8px #8882;
+      margin-left: 12px;
+    }
+    .timer {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #f79f1f;
+      background: #fff8;
+      border-radius: 8px;
+      padding: 6px 14px;
+      box-shadow: 0 2px 8px #8882;
+      letter-spacing: 2px;
+    }
+    .main {
+      flex: 1 1 auto;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 80px;
+      padding-bottom: 30px;
+    }
+    .question-panel {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 2px 16px #60a3bc22;
+      padding: 28px 7vw;
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      min-width: 0;
+      width: 92vw;
+      max-width: 400px;
+    }
+    .operation {
+      font-size: 2em;
+      color: #3c6382;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      text-align: center;
+      word-break: break-word;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      margin: 0 7px;
+      min-width: 36px;
+    }
+    .fraction .frac-num {
+      font-size: 1.1em;
+      font-weight: bold;
+      padding-bottom: 2px;
+    }
+    .fraction .frac-line {
+      border-top: 2.5px solid #3c6382;
+      width: 36px;
+      margin: 2px 0;
+      box-sizing: border-box;
+    }
+    .fraction .frac-den {
+      font-size: 1.1em;
+      font-weight: normal;
+      padding-top: 2px;
+    }
+    .answer-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 60px;
+    }
+    .answer-fraction input[type="number"] {
+      font-size: 0.9em;
+      border-radius: 14px;
+      border: 2px solid #38ada9;
+      padding: 10px 0;
+      text-align: center;
+      width: 70px;
+      height: 54px;
+      margin: 2px 0;
+      box-sizing: border-box;
+      outline: none;
+      background: #f7f1e3;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 10px #60a3bc22;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+    .answer-fraction input[type="number"]:focus {
+      border: 2.5px solid #f6b93b;
+      background: #fff;
+      box-shadow: 0 4px 16px #38ada933;
+    }
+    .answer-fraction .frac-line {
+      border-top: 2.5px solid #3c6382;
+      width: 60px;
+      margin: 2px 0;
+      box-sizing: border-box;
+    }
+    .pad-container {
+      width: 100%;
+      max-width: 260px;
+      margin: 12px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      z-index: 10;
+      gap: 0;
+    }
+    .pad-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 9px;
+      justify-content: center;
+    }
+    .pad-btn {
+      font-size: 1.35em;
+      font-weight: 700;
+      background: linear-gradient(93deg, #38ada9 60%, #f6b93b 100%);
+      color: #fff;
+      border: none;
+      border-radius: 11px;
+      width: 56px;
+      height: 46px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #8883;
+      transition: background 0.2s, box-shadow 0.2s;
+      outline: none;
+      margin: 0;
+      letter-spacing: 1px;
+      position: relative;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+    .pad-btn:active {
+      background: linear-gradient(90deg, #079992, #e58e26);
+      box-shadow: 0 3px 16px #38ada944;
+    }
+    .pad-btn.selected {
+      border: 2.5px solid #f6b93b;
+      box-shadow: 0 4px 16px #38ada933;
+      background: linear-gradient(90deg, #34e7e4 60%, #f6b93b 100%);
+      color: #3c6382;
+    }
+    .feedback {
+      font-size: 1.1em;
+      margin-top: 6px;
+      font-weight: 600;
+      min-height: 20px;
+      color: #b71540;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .final-message {
+      font-size: 1.6em;
+      color: #2c2c54;
+      font-weight: 800;
+      margin-top: 24px;
+      background: #f6b93b22;
+      border-radius: 18px;
+      padding: 22px 12vw;
+      box-shadow: 0 4px 24px #f6b93b44;
+      text-align: center;
+      animation: pop 0.7s ease;
+    }
+    #nameInput {
+      font-size: 1.3em;
+      border-radius: 14px;
+      border: 2px solid #38ada9;
+      padding: 14px 22px;
+      text-align: center;
+      width: 80vw;
+      max-width: 320px;
+      margin-bottom: 8px;
+      background: #f7f1e3;
+      box-shadow: 0 2px 10px #60a3bc22;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    #nameInput:focus {
+      border: 2.5px solid #f6b93b;
+      background: #fff;
+      box-shadow: 0 4px 16px #38ada933;
+    }
+    #startPanel button {
+      font-size: 1.2em;
+      font-weight: 700;
+      background: linear-gradient(90deg, #38ada9, #f6b93b);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 0;
+      width: 100%;
+      max-width: 210px;
+      margin-top: 6px;
+      margin-bottom: 2px;
+      box-shadow: 0 3px 14px #38ada933;
+      letter-spacing: 1.5px;
+      transition: background 0.18s, box-shadow 0.18s;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      outline: none;
+    }
+    #startPanel button:active {
+      background: linear-gradient(90deg, #079992, #e58e26);
+      box-shadow: 0 5px 18px #f6b93b33;
+    }
+    #submitBtn {
+      font-size: 1.15em;
+      font-weight: 700;
+      background: linear-gradient(90deg, #38ada9 60%, #f6b93b 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 0;
+      width: 100%;
+      max-width: 210px;
+      margin-top: 6px;
+      margin-bottom: 2px;
+      box-shadow: 0 3px 14px #38ada933;
+      letter-spacing: 1.5px;
+      transition: background 0.18s, box-shadow 0.18s;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      outline: none;
+    }
+    #submitBtn:active {
+      background: linear-gradient(90deg, #079992, #e58e26);
+      box-shadow: 0 5px 18px #f6b93b33;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      80% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @media (max-width: 600px) {
+      .question-panel {
+        padding: 16px 4vw;
+        max-width: 98vw;
+      }
+      .final-message {
+        padding: 18px 2vw;
+        font-size: 1.3em;
+      }
+      .fraction .frac-line, .answer-fraction .frac-line {
+        width: 40px;
+      }
+      .answer-fraction input[type="number"] {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9em;
+        padding: 6px 0;
+      }
+      #nameInput {
+        width: 90vw;
+        max-width: 98vw;
+        font-size: 1.15em;
+        padding: 12px 8px;
+      }
+      .pad-btn {
+        width: 38px;
+        height: 35px;
+        font-size: 1em;
+      }
+      .pad-container {
+        max-width: 160px;
+      }
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div style="display:flex; align-items:center;">
+      <div class="player-name" id="playerName"></div>
+      <div class="score" id="scorePanel"></div>
+    </div>
+    <div class="timer" id="timerPanel"></div>
+  </div>
+  <div class="main" id="mainPanel">
+    <div class="question-panel" id="startPanel">
+      <div style="font-size: 1.6em; font-weight: 700; color: #3c6382; margin-bottom:10px;">¡Bienvenido!</div>
+      <div style="font-size: 1.1em; margin-bottom:10px;">Introduce tu nombre para empezar:</div>
+      <input type="text" id="nameInput" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off"/>
+      <button onclick="startGame()">Comenzar</button>
+    </div>
+  </div>
+  <script>
+    // Estado global
+    let playerName = '';
+    let score = 0;
+    let timer = 600;
+    let timerInterval = null;
+    let gameActive = false;
+
+    // Elementos DOM
+    const playerNameDiv = document.getElementById('playerName');
+    const scorePanelDiv = document.getElementById('scorePanel');
+    const timerPanelDiv = document.getElementById('timerPanel');
+    const mainPanelDiv = document.getElementById('mainPanel');
+    const startPanelDiv = document.getElementById('startPanel');
+    const nameInput = document.getElementById('nameInput');
+
+    // Formato de tiempo
+    function formatTime(sec) {
+      let m = Math.floor(sec / 60);
+      let s = sec % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // Genera una fracción simplificada aleatoria entre -10 y +10
+    function randomFraction() {
+      let num = Math.floor(Math.random() * 21) - 10;
+      let den = Math.floor(Math.random() * 9) + 2; // denominador entre 2 y 10
+      // Evita denominador negativo y simplifica
+      if (den < 0) den = -den;
+      if (den === 0) den = 1;
+      if (num === 0) den = 1;
+      let g = gcd(Math.abs(num), Math.abs(den));
+      return { num: num / g, den: den / g };
+    }
+
+    // Máximo común divisor
+    function gcd(a, b) {
+      if (!b) return a;
+      return gcd(b, a % b);
+    }
+
+    // Simplifica fracciones
+    function simplifyFraction(num, den) {
+      let g = gcd(Math.abs(num), Math.abs(den));
+      num = num / g;
+      den = den / g;
+      if (den < 0) { num = -num; den = -den; }
+      return { num, den };
+    }
+
+    // Suma de fracciones
+    function addFrac(a, b) {
+      let num = a.num * b.den + b.num * a.den;
+      let den = a.den * b.den;
+      return simplifyFraction(num, den);
+    }
+    // Resta de fracciones
+    function subFrac(a, b) {
+      let num = a.num * b.den - b.num * a.den;
+      let den = a.den * b.den;
+      return simplifyFraction(num, den);
+    }
+    // Multiplicación de fracciones
+    function mulFrac(a, b) {
+      let num = a.num * b.num;
+      let den = a.den * b.den;
+      return simplifyFraction(num, den);
+    }
+    // División de fracciones
+    function divFrac(a, b) {
+      let num = a.num * b.den;
+      let den = a.den * b.num;
+      if (den === 0) den = 1;
+      return simplifyFraction(num, den);
+    }
+
+    // Formato visual de fracción
+    function fractionHtml(frac) {
+      return `<span class="fraction"><span class="frac-num">${frac.num}</span><span class="frac-line"></span><span class="frac-den">${frac.den}</span></span>`;
+    }
+
+    // --- PAD NUMÉRICO ---
+    function createPadHtml(activeFieldId) {
+      // activeFieldId: input element id ('ansNum' or 'ansDen')
+      return `
+        <div class="pad-container" id="padContainer">
+          <div class="pad-row">
+            <button class="pad-btn" data-val="7">7</button>
+            <button class="pad-btn" data-val="8">8</button>
+            <button class="pad-btn" data-val="9">9</button>
+          </div>
+          <div class="pad-row">
+            <button class="pad-btn" data-val="4">4</button>
+            <button class="pad-btn" data-val="5">5</button>
+            <button class="pad-btn" data-val="6">6</button>
+          </div>
+          <div class="pad-row">
+            <button class="pad-btn" data-val="1">1</button>
+            <button class="pad-btn" data-val="2">2</button>
+            <button class="pad-btn" data-val="3">3</button>
+          </div>
+          <div class="pad-row">
+            <button class="pad-btn" data-val="0">0</button>
+            <button class="pad-btn" data-val="-">−</button>
+            <button class="pad-btn" data-action="del">⌫</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startGame() {
+      const name = nameInput.value.trim() || "Jugador";
+      playerName = name;
+      score = 0;
+      timer = 600;
+      gameActive = true;
+      playerNameDiv.textContent = playerName;
+      scorePanelDiv.textContent = `Puntos: ${score}`;
+      timerPanelDiv.textContent = formatTime(timer);
+      startPanelDiv.style.display = 'none';
+      showNewOperation();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Genera operación entre dos fracciones aleatorias
+    function randomOperation() {
+      const ops = ['+', '-', '·', ':'];
+      let op = ops[Math.floor(Math.random() * ops.length)];
+      let a = randomFraction();
+      let b = randomFraction();
+      if (op === ':') {
+        while (b.num === 0) b = randomFraction();
+        let res = divFrac(a, b);
+        return {a, b, op, result: res};
+      }
+      if (op === '·') {
+        let res = mulFrac(a, b);
+        return {a, b, op, result: res};
+      }
+      if (op === '+') {
+        let res = addFrac(a, b);
+        return {a, b, op, result: res};
+      }
+      if (op === '-') {
+        let res = subFrac(a, b);
+        return {a, b, op, result: res};
+      }
+    }
+
+    function showNewOperation() {
+      if (!gameActive) return;
+      mainPanelDiv.innerHTML = '';
+      const opData = randomOperation();
+      const questionPanel = document.createElement('div');
+      questionPanel.className = 'question-panel';
+      questionPanel.innerHTML = `
+        <div class="operation">
+          ${fractionHtml(opData.a)}
+          <span>${opData.op}</span>
+          ${fractionHtml(opData.b)}
+          <span>=</span>
+          <span class="answer-fraction">
+            <input type="number" id="ansNum" autocomplete="off" inputmode="numeric" />
+            <span class="frac-line"></span>
+            <input type="number" id="ansDen" autocomplete="off" inputmode="numeric" />
+          </span>
+        </div>
+        <div id="padZone"></div>
+        <button id="submitBtn">Responder</button>
+        <div class="feedback" id="feedbackMsg"></div>
+      `;
+      mainPanelDiv.appendChild(questionPanel);
+
+      let activeField = 'ansNum';
+      function updatePad() {
+        document.getElementById('padZone').innerHTML = createPadHtml(activeField);
+        setPadListeners();
+      }
+      function setPadListeners() {
+        document.querySelectorAll('.pad-btn[data-val]').forEach(btn => {
+          btn.onclick = () => {
+            let val = btn.getAttribute('data-val');
+            let inp = document.getElementById(activeField);
+            let v = inp.value;
+             // Si pulsa "-", solo si no está ya el signo menos al principio
+            if (val === '-') {
+              if (!v.startsWith('-')) {
+                inp.value = '-' + v;
+              }
+            } else {
+              inp.value = v + val;
+            }
+            inp.focus();
+          };
+        });
+        document.querySelectorAll('.pad-btn[data-action="del"]').forEach(btn => {
+          btn.onclick = () => {
+            let inp = document.getElementById(activeField);
+            inp.value = inp.value.slice(0, -1);
+            inp.focus();
+          };
+        });
+      }
+      updatePad();
+
+      document.getElementById('ansNum').addEventListener('focus', function() {
+        activeField = 'ansNum';
+        updatePad();
+      });
+      document.getElementById('ansDen').addEventListener('focus', function() {
+        activeField = 'ansDen';
+        updatePad();
+      });
+
+      document.getElementById('ansNum').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('submitBtn').click();
+      });
+      document.getElementById('ansDen').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('submitBtn').click();
+      });
+      document.getElementById('ansNum').focus();
+
+      document.getElementById('submitBtn').onclick = () => {
+        const numVal = document.getElementById('ansNum').value.trim();
+        const denVal = document.getElementById('ansDen').value.trim();
+        const feedbackMsg = document.getElementById('feedbackMsg');
+        if (numVal === '' || denVal === '') {
+          feedbackMsg.textContent = 'Por favor, rellena numerador y denominador.';
+          feedbackMsg.style.color = '#b71540';
+          return;
+        }
+        let userNum = Number(numVal);
+        let userDen = Number(denVal);
+        if (isNaN(userNum) || isNaN(userDen) || userDen === 0) {
+          feedbackMsg.textContent = 'Introduce números válidos. El denominador no puede ser 0.';
+          feedbackMsg.style.color = '#b71540';
+          return;
+        }
+        let userFrac = simplifyFraction(userNum, userDen);
+        let resFrac = simplifyFraction(opData.result.num, opData.result.den);
+
+        let correct = (userFrac.num === resFrac.num && userFrac.den === resFrac.den);
+        if (correct) {
+          score += 10;
+          feedbackMsg.textContent = '¡Correcto!';
+          feedbackMsg.style.color = '#218c5a';
+        } else {
+          feedbackMsg.innerHTML = `Incorrecto. La respuesta era ${fractionHtml(resFrac)}`;
+          feedbackMsg.style.color = '#b71540';
+          score -= 10;
+        }
+        scorePanelDiv.textContent = `Puntos: ${score}`;
+        setTimeout(() => {
+          if (gameActive) showNewOperation();
+        }, 1100);
+      };
+    }
+
+    function updateTimer() {
+      timer--;
+      timerPanelDiv.textContent = formatTime(timer);
+      if (timer <= 0) {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      gameActive = false;
+      timerPanelDiv.textContent = '00:00';
+      mainPanelDiv.innerHTML = `
+        <div class="final-message">
+          ¡Tiempo terminado!<br>
+          <span>${playerName}</span>, tu marcador final es:<br>
+          <span style="color:#079992;font-size:2em">${score}</span> puntos
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
